@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Internal\WCCom\ConnectionHelper;
 use Automattic\WooCommerce\Internal\ProductDownloads\ApprovedDirectories\Register as Download_Directories;
 use Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer as Order_DataSynchronizer;
-use Automattic\WooCommerce\Utilities\{ LoggingUtil, OrderUtil, PluginUtil };
+use Automattic\WooCommerce\Utilities\{ LoggingUtil, OrderUtil };
 
 /**
  * System status controller class.
@@ -373,41 +373,7 @@ class WC_REST_System_Status_V2_Controller extends WC_REST_Controller {
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 					'items'       => array(
-						'type'       => 'object',
-						'properties' => array(
-							'plugin'            => array(
-								'description' => __( 'Plugin basename. The path to the main plugin file relative to the plugins directory.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'name'              => array(
-								'description' => __( 'Name of the plugin.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'version'           => array(
-								'description' => __( 'Current plugin version.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'version_latest'    => array(
-								'description' => __( 'Latest available plugin version.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'url'               => array(
-								'description' => __( 'Plugin URL.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'author_name'       => array(
-								'description' => __( 'Plugin author name.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'author_url'        => array(
-								'description' => __( 'Plugin author URL.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'network_activated' => array(
-								'description' => __( 'Whether the plugin can only be activated network-wide.', 'woocommerce' ),
-								'type'        => 'boolean',
-							),
-						),
+						'type' => 'string',
 					),
 				),
 				'inactive_plugins'   => array(
@@ -416,41 +382,7 @@ class WC_REST_System_Status_V2_Controller extends WC_REST_Controller {
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 					'items'       => array(
-						'type'       => 'object',
-						'properties' => array(
-							'plugin'            => array(
-								'description' => __( 'Plugin basename. The path to the main plugin file relative to the plugins directory.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'name'              => array(
-								'description' => __( 'Name of the plugin.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'version'           => array(
-								'description' => __( 'Current plugin version.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'version_latest'    => array(
-								'description' => __( 'Latest available plugin version.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'url'               => array(
-								'description' => __( 'Plugin URL.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'author_name'       => array(
-								'description' => __( 'Plugin author name.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'author_url'        => array(
-								'description' => __( 'Plugin author URL.', 'woocommerce' ),
-								'type'        => 'string',
-							),
-							'network_activated' => array(
-								'description' => __( 'Whether the plugin can only be activated network-wide.', 'woocommerce' ),
-								'type'        => 'boolean',
-							),
-						),
+						'type' => 'string',
 					),
 				),
 				'dropins_mu_plugins' => array(
@@ -1112,10 +1044,15 @@ class WC_REST_System_Status_V2_Controller extends WC_REST_Controller {
 				return array();
 			}
 
-			$active_valid_plugins = wc_get_container()->get( PluginUtil::class )->get_all_active_valid_plugins();
-			$active_plugins_data  = array();
+			$active_plugins = (array) get_option( 'active_plugins', array() );
+			if ( is_multisite() ) {
+				$network_activated_plugins = array_keys( get_site_option( 'active_sitewide_plugins', array() ) );
+				$active_plugins            = array_merge( $active_plugins, $network_activated_plugins );
+			}
 
-			foreach ( $active_valid_plugins as $plugin ) {
+			$active_plugins_data = array();
+
+			foreach ( $active_plugins as $plugin ) {
 				$data                  = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
 				$active_plugins_data[] = $this->format_plugin_data( $plugin, $data );
 			}

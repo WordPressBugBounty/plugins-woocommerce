@@ -76,13 +76,13 @@ class Payments extends Task {
 	 * @return bool
 	 */
 	public function can_view() {
-		// The task is visible if WooPayments is not supported in the current store location country.
-		// Otherwise, the WooPayments task will be shown.
-		return Features::is_enabled( 'payment-gateway-suggestions' ) && ! WooCommercePayments::is_supported();
+		$woocommerce_payments = $this->task_list->get_task( 'woocommerce-payments' );
+		// Make sure the task is mutually exclusive with the WooPayments task.
+		return Features::is_enabled( 'payment-gateway-suggestions' ) && ! $woocommerce_payments->can_view();
 	}
 
 	/**
-	 * Check if the store has any enabled gateways.
+	 * Check if the store has any enabled gateways, other than WooPayments.
 	 *
 	 * @return bool
 	 */
@@ -91,7 +91,8 @@ class Payments extends Task {
 		$enabled_gateways = array_filter(
 			$gateways,
 			function( $gateway ) {
-				return 'yes' === $gateway->enabled;
+				// Filter out any WooPayments gateways as this task is mutually exclusive with the WooPayments task.
+				return 'yes' === $gateway->enabled && 0 !== strpos( $gateway->id, 'woocommerce_payments' );
 			}
 		);
 
@@ -116,7 +117,7 @@ class Payments extends Task {
 		}
 
 		// Check if there is an active WooPayments incentive via the welcome page.
-		if ( WcPayWelcomePage::instance()->is_incentive_visible() ) {
+		if ( WcPayWelcomePage::instance()->must_be_visible() ) {
 			// Point to the WooPayments welcome page.
 			return add_query_arg( 'from', 'WCADMIN_PAYMENT_TASK', admin_url( 'admin.php?page=wc-admin&path=/wc-pay-welcome-page' ) );
 		}

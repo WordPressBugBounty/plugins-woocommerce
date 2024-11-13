@@ -1,9 +1,4 @@
 <?php
-/**
- * Interface for a transformer.
- *
- * @deprecated 9.4.0 Use \Automattic\WooCommerce\Admin\RemoteSpecs\Transformers\TransformerInterface instead.
- */
 
 namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
@@ -15,8 +10,6 @@ use stdClass;
  * Interface TransformerInterface
  *
  * @package Automattic\WooCommerce\Admin\RemoteInboxNotifications
- *
- * @deprecated 9.4.0 Use \Automattic\WooCommerce\Admin\RemoteSpecs\Transformers\TransformerInterface instead.
  */
 interface TransformerInterface {
 	/**

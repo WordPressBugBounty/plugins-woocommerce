@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"name": "woocommerce/product-filter-attribute",
 	"version": "1.0.0",
-	"title": "Attribute (Experimental)",
+	"title": "Filter Options",
 	"description": "Enable customers to filter the product grid by selecting one or more attributes, such as color.",
 	"category": "woocommerce",
 	"keywords": [
@@ -11,10 +11,11 @@
 	"textdomain": "woocommerce",
 	"apiVersion": 3,
 	"ancestor": [
-		"woocommerce/product-filters"
+		"woocommerce/product-filter"
 	],
 	"supports": {
 		"interactivity": true,
+		"inserter": false,
 		"color": {
 			"text": true,
 			"background": false,
@@ -77,7 +78,7 @@
 		},
 		"displayStyle": {
 			"type": "string",
-			"default": "woocommerce/product-filter-checkbox-list"
+			"default": "list"
 		},
 		"selectType": {
 			"type": "string",
@@ -98,11 +99,6 @@
 		"clearButton": {
 			"type": "boolean",
 			"default":true
-		}
-	},
-	"example": {
-		"attributes": {
-			"isPreview": true
 		}
 	}
 }

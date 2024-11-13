@@ -14,7 +14,7 @@ namespace Automattic\WooCommerce\Database\Migrations;
 abstract class TableMigrator {
 
 	/**
-	 * An array of cumulated error messages.
+	 * An array of cummulated error messages.
 	 *
 	 * @var array
 	 */

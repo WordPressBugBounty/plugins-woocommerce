@@ -22,6 +22,17 @@ class ProductFiltersOverlayNavigation extends AbstractBlock {
 	}
 
 	/**
+	 * Get the frontend script handle for this block type.
+	 *
+	 * @see $this->register_block_type()
+	 * @param string $key Data to get, or default to everything.
+	 * @return array|string|null
+	 */
+	protected function get_block_type_script( $key = null ) {
+		return null;
+	}
+
+	/**
 	 * Include and render the block.
 	 *
 	 * @param array    $attributes Block attributes. Default empty array.
@@ -35,13 +46,13 @@ class ProductFiltersOverlayNavigation extends AbstractBlock {
 				'class' => 'wc-block-product-filters-overlay-navigation',
 			)
 		);
-		$overlay_mode       = isset( $block->context['woocommerce/product-filters/overlay'] ) ? $block->context['woocommerce/product-filters/overlay'] : 'never';
+		$overlay_mode       = $block->context['woocommerce/product-filters/overlay'];
 
-		if ( 'open-overlay' === $attributes['triggerType'] && ( 'never' === $overlay_mode || ( ! wp_is_mobile() && 'mobile' === $overlay_mode ) ) ) {
+		if ( 'never' === $overlay_mode || ( ! wp_is_mobile() && 'mobile' === $overlay_mode ) ) {
 			return null;
 		}
 
-		$html = strtr(
+		$html_content = strtr(
 			'<div {{wrapper_attributes}}>
 				{{primary_content}}
 				{{secondary_content}}
@@ -52,20 +63,7 @@ class ProductFiltersOverlayNavigation extends AbstractBlock {
 				'{{secondary_content}}'  => 'open-overlay' === $attributes['triggerType'] ? $this->render_label( $attributes ) : $this->render_icon( $attributes ),
 			)
 		);
-
-		$p = new \WP_HTML_Tag_Processor( $html );
-
-		if ( $p->next_tag() ) {
-			$p->set_attribute( 'data-wc-interactive', wp_json_encode( array( 'namespace' => 'woocommerce/product-filters' ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) );
-			$p->set_attribute(
-				'data-wc-on--click',
-				'open-overlay' === $attributes['triggerType'] ? 'actions.openDialog' : 'actions.closeDialog'
-			);
-			$p->set_attribute( 'data-wc-class--hidden', 'open-overlay' === $attributes['triggerType'] ? 'state.isDialogOpen' : '!state.isDialogOpen' );
-			$html = $p->get_updated_html();
-		}
-
-		return $html;
+		return $html_content;
 	}
 
 	/**

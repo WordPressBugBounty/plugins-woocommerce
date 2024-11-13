@@ -6,8 +6,6 @@ use WP_Error;
 
 /**
  * Patterns Helper class.
- *
- * @internal
  */
 class PatternsHelper {
 	/**

@@ -176,10 +176,6 @@ class ProductButton extends AbstractBlock {
 				data-wc-class--loading="context.isLoading"
 			';
 
-			$anchor_directive = '
-				data-wc-on--click="woocommerce/product-collection::actions.viewProduct"
-			';
-
 			$span_button_directives = '
 				data-wc-text="state.addToCartText"
 				data-wc-class--wc-block-slide-in="state.slideInAnimation"
@@ -223,7 +219,7 @@ class ProductButton extends AbstractBlock {
 						'{attributes}'             => isset( $args['attributes'] ) ? wc_implode_html_attributes( $args['attributes'] ) : '',
 						'{add_to_cart_text}'       => esc_html( $initial_product_text ),
 						'{div_directives}'         => $is_ajax_button ? $div_directives : '',
-						'{button_directives}'      => $is_ajax_button ? $button_directives : $anchor_directive,
+						'{button_directives}'      => $is_ajax_button ? $button_directives : '',
 						'{span_button_directives}' => $is_ajax_button ? $span_button_directives : '',
 						'{view_cart_html}'         => $is_ajax_button ? $this->get_view_cart_html() : '',
 					)

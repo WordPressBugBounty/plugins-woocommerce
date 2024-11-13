@@ -615,11 +615,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			if ( is_null( $customer_user ) ) {
 				$customer_user = new \WC_Customer( $user_id );
 			}
-
-			// Set email as customer email instead of Order Billing Email if we have a customer.
-			$data['email'] = $customer_user->get_email( 'edit' );
-
-			// Adding other relevant customer data.
 			$data['user_id']         = $user_id;
 			$data['username']        = $customer_user->get_username( 'edit' );
 			$data['date_registered'] = $customer_user->get_date_created( 'edit' ) ? $customer_user->get_date_created( 'edit' )->date( TimeInterval::$sql_datetime_format ) : null;
@@ -918,18 +913,14 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Anonymize the customer data for a single order.
 	 *
 	 * @internal
-	 * @param int|WC_Order $order Order instance or ID.
+	 * @param int $order_id Order id.
 	 * @return void
 	 */
-	public static function anonymize_customer( $order ) {
+	public static function anonymize_customer( $order_id ) {
 		global $wpdb;
 
-		if ( ! is_object( $order ) ) {
-			$order = wc_get_order( absint( $order ) );
-		}
-
 		$customer_id = $wpdb->get_var(
-			$wpdb->prepare( "SELECT customer_id FROM {$wpdb->prefix}wc_order_stats WHERE order_id = %d", $order->get_id() )
+			$wpdb->prepare( "SELECT customer_id FROM {$wpdb->prefix}wc_order_stats WHERE order_id = %d", $order_id )
 		);
 
 		if ( ! $customer_id ) {

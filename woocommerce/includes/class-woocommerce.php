@@ -27,6 +27,7 @@ use Automattic\WooCommerce\Internal\Traits\AccessiblePrivateMethods;
 use Automattic\WooCommerce\Internal\Utilities\LegacyRestApiStub;
 use Automattic\WooCommerce\Internal\Utilities\WebhookUtil;
 use Automattic\WooCommerce\Internal\Admin\Marketplace;
+use Automattic\WooCommerce\Internal\McStats;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
 use Automattic\WooCommerce\Utilities\{LoggingUtil, RestApiUtil, TimeUtil};
 use Automattic\WooCommerce\Internal\Logging\RemoteLogger;
@@ -45,7 +46,7 @@ final class WooCommerce {
 	 *
 	 * @var string
 	 */
-	public $version = '9.4.1';
+	public $version = '9.3.3';
 
 	/**
 	 * WooCommerce Schema version.
@@ -383,10 +384,8 @@ final class WooCommerce {
 			unset( $error_copy['message'] );
 
 			$context = array(
-				'source'         => 'fatal-errors',
-				'error'          => $error_copy,
-				// Indicate that this error should be logged remotely if remote logging is enabled.
-				'remote-logging' => true,
+				'source' => 'fatal-errors',
+				'error'  => $error_copy,
 			);
 
 			if ( false !== strpos( $message, 'Stack trace:' ) ) {
@@ -407,6 +406,12 @@ final class WooCommerce {
 				$message,
 				$context
 			);
+
+			// Record fatal error stats.
+			$container = wc_get_container();
+			$mc_stats  = $container->get( McStats::class );
+			$mc_stats->add( 'error', 'fatal-errors-during-shutdown' );
+			$mc_stats->do_server_side_stats();
 
 			/**
 			 * Action triggered when there are errors during shutdown.
@@ -868,7 +873,7 @@ final class WooCommerce {
 		 */
 		$locale = apply_filters( 'plugin_locale', $locale, 'woocommerce' ); // phpcs:ignore WooCommerce.Commenting.CommentHooks.MissingSinceComment
 
-		unload_textdomain( 'woocommerce', true );
+		unload_textdomain( 'woocommerce' );
 		load_textdomain( 'woocommerce', WP_LANG_DIR . '/woocommerce/woocommerce-' . $locale . '.mo' );
 		load_plugin_textdomain( 'woocommerce', false, plugin_basename( dirname( WC_PLUGIN_FILE ) ) . '/i18n/languages' );
 	}

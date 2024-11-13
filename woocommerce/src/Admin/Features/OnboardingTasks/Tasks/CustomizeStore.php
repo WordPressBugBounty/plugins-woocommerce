@@ -7,8 +7,6 @@ use WP_Post;
 
 /**
  * Customize Your Store Task
- *
- * @internal
  */
 class CustomizeStore extends Task {
 	/**

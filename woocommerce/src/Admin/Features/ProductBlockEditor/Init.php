@@ -172,7 +172,7 @@ class Init {
 		if ( ! PageController::is_admin_page() ) {
 			return;
 		}
-		// Dequeuing this to avoid conflicts, until we remove the 'woocommerce-page' class.
+		// Dequeing this to avoid conflicts, until we remove the 'woocommerce-page' class.
 		wp_dequeue_style( 'woocommerce-blocktheme' );
 	}
 

@@ -896,8 +896,7 @@ class WC_Admin_Post_Types {
 			return false;
 		}
 
-		$old_price     = $product->{"get_{$price_type}_price"}();
-		$old_price     = '' === $old_price ? (float) $product->get_regular_price() : (float) $old_price;
+		$old_price     = (float) $product->{"get_{$price_type}_price"}();
 		$price_changed = false;
 
 		$change_price  = absint( $request_data[ "change_{$price_type}_price" ] );
@@ -907,17 +906,13 @@ class WC_Admin_Post_Types {
 
 		switch ( $change_price ) {
 			case 1:
-				if ( empty( $price ) ) {
-					$new_price = $product->get_regular_price();
-				} else {
-					$new_price = $price;
-				}
+				$new_price = $price;
 				break;
 			case 2:
 				if ( $is_percentage ) {
 					$percent   = $price / 100;
 					$new_price = $old_price + ( $old_price * $percent );
-				} elseif ( ! empty( $price ) ) {
+				} else {
 					$new_price = $old_price + $price;
 				}
 				break;
@@ -925,7 +920,7 @@ class WC_Admin_Post_Types {
 				if ( $is_percentage ) {
 					$percent   = $price / 100;
 					$new_price = max( 0, $old_price - ( $old_price * $percent ) );
-				} elseif ( ! empty( $price ) ) {
+				} else {
 					$new_price = max( 0, $old_price - $price );
 				}
 				break;

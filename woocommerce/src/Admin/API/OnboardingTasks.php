@@ -37,7 +37,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	protected $rest_base = 'onboarding/tasks';
 
 	/**
-	 * Duration to millisecond mapping.
+	 * Duration to milisecond mapping.
 	 *
 	 * @var array
 	 */

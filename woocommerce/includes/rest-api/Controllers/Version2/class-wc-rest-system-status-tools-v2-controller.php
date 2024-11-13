@@ -8,9 +8,6 @@
  * @since   3.0.0
  */
 
-use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
-use Automattic\WooCommerce\Internal\Utilities\DatabaseUtil;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -219,11 +216,6 @@ class WC_REST_System_Status_Tools_V2_Controller extends WC_REST_Controller {
 					__( 'Note:', 'woocommerce' ),
 					__( 'This tool will update your WooCommerce database to the latest version. Please ensure you make sufficient backups before proceeding.', 'woocommerce' )
 				),
-			),
-			'recreate_order_address_fts_index'     => array(
-				'name'   => __( 'Re-create Order Address FTS index', 'woocommerce' ),
-				'button' => __( 'Recreate index', 'woocommerce' ),
-				'desc'   => __( 'This tool will recreate the full text search index for order addresses. If the index does not exist, it will try to create it.', 'woocommerce' ),
 			),
 		);
 		if ( method_exists( 'WC_Install', 'verify_base_tables' ) ) {
@@ -604,13 +596,6 @@ class WC_REST_System_Status_Tools_V2_Controller extends WC_REST_Controller {
 					$message .= implode( ', ', $missing_tables );
 					$ran      = false;
 				}
-				break;
-
-			case 'recreate_order_address_fts_index':
-				$hpos_controller = wc_get_container()->get( CustomOrdersTableController::class );
-				$results         = $hpos_controller->recreate_order_address_fts_index();
-				$ran             = $results['status'];
-				$message         = $results['message'];
 				break;
 
 			default:

@@ -39,7 +39,7 @@ jQuery(function( $ ) {
         },
 
         /**
-         * Insert generate coupon code button HTML.
+         * Insert generate coupon code buttom HTML.
          */
         insert_generate_coupon_code_button: function() {
 			$( '.post-type-shop_coupon' ).find( '#title' ).after(

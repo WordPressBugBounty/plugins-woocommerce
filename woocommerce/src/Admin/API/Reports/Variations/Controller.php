@@ -50,7 +50,7 @@ class Controller extends GenericController implements ExportableInterface {
 	);
 
 	/**
-	 * Get data from `'variations'` GenericQuery.
+	 * Get data from `'variations'` Query.
 	 *
 	 * @override GenericController::get_datastore_data()
 	 *
@@ -246,14 +246,12 @@ class Controller extends GenericController implements ExportableInterface {
 	 */
 	public function get_collection_params() {
 		$params                      = parent::get_collection_params();
-		$params['orderby']['enum']   = $this->apply_custom_orderby_filters(
-			array(
-				'date',
-				'net_revenue',
-				'orders_count',
-				'items_sold',
-				'sku',
-			)
+		$params['orderby']['enum']   = array(
+			'date',
+			'net_revenue',
+			'orders_count',
+			'items_sold',
+			'sku',
 		);
 		$params['match']             = array(
 			'description'       => __( 'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient. Match affects the following parameters: status_is, status_is_not, product_includes, product_excludes, coupon_includes, coupon_excludes, customer, categories', 'woocommerce' ),

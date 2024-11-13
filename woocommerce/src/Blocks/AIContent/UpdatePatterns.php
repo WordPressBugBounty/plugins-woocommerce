@@ -7,8 +7,6 @@ use WP_Error;
 
 /**
  * Pattern Images class.
- *
- * @internal
  */
 class UpdatePatterns {
 
