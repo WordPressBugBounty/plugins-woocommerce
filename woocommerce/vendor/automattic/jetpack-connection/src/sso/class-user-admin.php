@@ -21,8 +21,6 @@ use WP_User_Query;
 
 /**
  * Jetpack sso user admin class.
- *
- * @phan-constructor-used-for-side-effects
  */
 class User_Admin extends Base_Admin {
 	/**

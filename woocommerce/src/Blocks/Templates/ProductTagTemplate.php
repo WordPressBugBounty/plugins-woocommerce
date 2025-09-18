@@ -1,5 +1,5 @@
 <?php
-declare( strict_types=1 );
+
 namespace Automattic\WooCommerce\Blocks\Templates;
 
 use Automattic\WooCommerce\Blocks\Templates\ArchiveProductTemplatesCompatibility;
@@ -10,7 +10,7 @@ use Automattic\WooCommerce\Blocks\Utils\BlockTemplateUtils;
  *
  * @internal
  */
-class ProductTagTemplate extends AbstractTemplateWithFallback {
+class ProductTagTemplate extends AbstractTemplate {
 
 	/**
 	 * The slug of the template.
@@ -24,14 +24,14 @@ class ProductTagTemplate extends AbstractTemplateWithFallback {
 	 *
 	 * @var string
 	 */
-	public string $fallback_template = ProductCatalogTemplate::SLUG;
+	public $fallback_template = ProductCatalogTemplate::SLUG;
 
 	/**
-	 * Whether this is a taxonomy template.
-	 *
-	 * @var bool
+	 * Initialization method.
 	 */
-	public bool $is_taxonomy_template = true;
+	public function init() {
+		add_action( 'template_redirect', array( $this, 'render_block_template' ) );
+	}
 
 	/**
 	 * Returns the title of the template.

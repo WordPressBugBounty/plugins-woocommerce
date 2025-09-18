@@ -1,5 +1,5 @@
 /**
- * @jest-environment jest-fixed-jsdom
+ * @jest-environment jsdom
  */
 
 describe( 'Address Autocomplete Provider Registration', () => {

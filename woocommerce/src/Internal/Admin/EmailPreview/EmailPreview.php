@@ -8,6 +8,7 @@ declare( strict_types=1 );
 namespace Automattic\WooCommerce\Internal\Admin\EmailPreview;
 
 use Automattic\WooCommerce\Internal\EmailEditor\WooContentProcessor;
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use Throwable;
 use WC_Email;
 use WC_Order;
@@ -84,13 +85,6 @@ class EmailPreview {
 	 * @var object
 	 */
 	protected static $instance = null;
-
-	/**
-	 * Whether the locale has been switched when rendering the preview.
-	 *
-	 * @var bool
-	 */
-	private bool $locale_switched = false;
 
 	/**
 	 * Get class instance.
@@ -175,8 +169,6 @@ class EmailPreview {
 	 * @throws \InvalidArgumentException When the email type is invalid.
 	 */
 	public function set_email_type( string $email_type ) {
-		$this->switch_to_site_locale();
-
 		$wc_emails = WC()->mailer()->get_emails();
 		$emails    = array_combine(
 			array_map( 'get_class', $wc_emails ),
@@ -234,8 +226,6 @@ class EmailPreview {
 		 * @since 9.6.0
 		 */
 		$this->email = apply_filters( 'woocommerce_prepare_email_for_preview', $this->email );
-
-		$this->restore_locale();
 	}
 
 	/**
@@ -339,11 +329,11 @@ class EmailPreview {
 	 * @return string
 	 */
 	private function render_preview_email() {
+		$this->set_up_filters();
+
 		if ( ! $this->email_type ) {
 			$this->set_email_type( self::DEFAULT_EMAIL_TYPE );
 		}
-
-		$this->set_up_filters();
 
 		if ( 'plain' === $this->email->get_email_type() ) {
 			$content  = '<pre style="word-wrap: break-word; white-space: pre-wrap; text-align: ' . ( is_rtl() ? 'right' : 'left' ) . ';">';
@@ -522,7 +512,6 @@ class EmailPreview {
 	 * Set up filters for email preview.
 	 */
 	public function set_up_filters() {
-		$this->switch_to_site_locale();
 		// Always show shipping address in the preview email.
 		add_filter( 'woocommerce_order_needs_shipping_address', array( $this, 'enable_shipping_address' ) );
 		// Email templates fetch product from the database to show additional information, which are not
@@ -542,7 +531,6 @@ class EmailPreview {
 		remove_filter( 'woocommerce_order_item_product', array( $this, 'get_dummy_product_when_not_set' ), 10 );
 		remove_filter( 'woocommerce_is_email_preview', array( $this, 'enable_preview_mode' ) );
 		remove_filter( 'woocommerce_order_item_thumbnail', array( $this, 'get_placeholder_image' ) );
-		$this->restore_locale();
 	}
 
 	/**
@@ -624,26 +612,5 @@ class EmailPreview {
 		}
 
 		return $message;
-	}
-
-	/**
-	 * Switch to the site locale. This is to ensure the email is displayed
-	 * in the store's language, as the customer would see it, not the admin's language.
-	 */
-	private function switch_to_site_locale() {
-		if ( ! $this->locale_switched ) {
-			wc_switch_to_site_locale();
-			$this->locale_switched = true;
-		}
-	}
-
-	/**
-	 * Restore the original locale.
-	 */
-	private function restore_locale() {
-		if ( $this->locale_switched ) {
-			wc_restore_locale();
-			$this->locale_switched = false;
-		}
 	}
 }

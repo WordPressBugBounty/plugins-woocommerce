@@ -8,7 +8,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Internal\AddressProvider\AddressProviderController;
 use Automattic\WooCommerce\Internal\AssignDefaultCategory;
 use Automattic\WooCommerce\Internal\BatchProcessing\BatchProcessingController;
 use Automattic\WooCommerce\Internal\ComingSoon\ComingSoonAdminBarBadge;
@@ -32,8 +31,6 @@ use Automattic\WooCommerce\Proxies\LegacyProxy;
 use Automattic\WooCommerce\Utilities\{LoggingUtil, RestApiUtil, TimeUtil};
 use Automattic\WooCommerce\Internal\Logging\RemoteLogger;
 use Automattic\WooCommerce\Caches\OrderCountCacheService;
-use Automattic\WooCommerce\Internal\StockNotifications\StockNotifications;
-use Automattic\Jetpack\Constants;
 
 /**
  * Main WooCommerce Class.
@@ -47,7 +44,7 @@ final class WooCommerce {
 	 *
 	 * @var string
 	 */
-	public $version = '10.2.0';
+	public $version = '10.1.2';
 
 	/**
 	 * WooCommerce Schema version.
@@ -341,12 +338,6 @@ final class WooCommerce {
 		$container->get( ComingSoonRequestHandler::class );
 		$container->get( OrderCountCacheService::class );
 		$container->get( EmailImprovements::class );
-		$container->get( AddressProviderController::class );
-
-		// Feature flags.
-		if ( Constants::is_true( 'WOOCOMMERCE_BIS_ALPHA_ENABLED' ) ) {
-			$container->get( StockNotifications::class );
-		}
 
 		/**
 		 * These classes have a register method for attaching hooks.

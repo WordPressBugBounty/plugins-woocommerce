@@ -463,7 +463,8 @@ class CustomOrdersTableController {
 			return 'no';
 		}
 
-		if ( ! $this->changing_data_source_with_sync_pending_is_allowed() && $this->data_synchronizer->has_orders_pending_sync() ) {
+		$sync_is_pending = $this->data_synchronizer->has_orders_pending_sync();
+		if ( $sync_is_pending && ! $this->changing_data_source_with_sync_pending_is_allowed() ) {
 			throw new \Exception( "The authoritative table for orders storage can't be changed while there are orders out of sync" );
 		}
 

@@ -42,7 +42,6 @@ class WC_Admin {
 		add_action( 'admin_init', array( $this, 'admin_redirects' ) );
 		add_action( 'admin_footer', 'wc_print_js', 25 );
 		add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
-		add_filter( 'update_footer', array( $this, 'update_footer_version' ), 20 );
 
 		// Disable WXR export of schedule action posts.
 		add_filter( 'action_scheduler_post_type_args', array( $this, 'disable_webhook_post_export' ) );
@@ -308,9 +307,8 @@ class WC_Admin {
 	/**
 	 * Change the admin footer text on WooCommerce admin pages.
 	 *
-	 * @since 2.3
-	 *
-	 * @param string $footer_text Footer text to be rendered.
+	 * @since  2.3
+	 * @param  string $footer_text text to be rendered in the footer.
 	 * @return string
 	 */
 	public function admin_footer_text( $footer_text ) {
@@ -318,11 +316,12 @@ class WC_Admin {
 			return $footer_text;
 		}
 		$current_screen = get_current_screen();
-		$wc_pages       = array_merge( wc_get_screen_ids(), array( 'woocommerce_page_wc-admin' ) );
+		$wc_pages       = wc_get_screen_ids();
 
 		// Set only WC pages.
 		$wc_pages = array_diff( $wc_pages, array( 'profile', 'user-edit' ) );
 
+		// Check to make sure we're on a WooCommerce admin page.
 		/**
 		 * Filter to determine if admin footer text should be displayed.
 		 *
@@ -348,43 +347,7 @@ class WC_Admin {
 			}
 		}
 
-		return '<span id="footer-thankyou">' . $footer_text . '</span>';
-	}
-
-	/**
-	 * Update the footer version text.
-	 *
-	 * @since $VID:$
-	 *
-	 * @param string $version The current version string.
-	 * @return string
-	 */
-	public function update_footer_version( $version ) {
-		if ( ! function_exists( 'wc_get_screen_ids' ) ) {
-			return $version;
-		}
-		$current_screen = get_current_screen();
-		$wc_pages       = array_merge( wc_get_screen_ids(), array( 'woocommerce_page_wc-admin' ) );
-
-		// Set only WC pages.
-		$wc_pages = array_diff( $wc_pages, array( 'profile', 'user-edit' ) );
-
-		// Check to make sure we're on a WooCommerce admin page.
-		/**
-		 * Filter to determine if update footer text should be displayed.
-		 *
-		 * @since 2.3
-		 */
-		if ( isset( $current_screen->id ) && apply_filters( 'woocommerce_display_update_footer_text', in_array( $current_screen->id, $wc_pages, true ) ) ) {
-			// Replace WordPress version with WooCommerce version.
-			$version = sprintf(
-				/* translators: %s: WooCommerce version */
-				__( 'Version %s', 'woocommerce' ),
-				esc_html( WC()->version )
-			);
-		}
-
-		return $version;
+		return $footer_text;
 	}
 
 	/**

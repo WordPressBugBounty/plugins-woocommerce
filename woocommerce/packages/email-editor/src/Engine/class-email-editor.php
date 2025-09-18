@@ -48,24 +48,20 @@ class Email_Editor {
 	 * @var Send_Preview_Email Send Preview controller.
 	 */
 	private Send_Preview_Email $send_preview_email;
+
 	/**
 	 * Property for Personalization_Tags_Controller that allows initializing personalization tags.
 	 *
 	 * @var Personalization_Tags_Registry Personalization tags registry.
 	 */
 	private Personalization_Tags_Registry $personalization_tags_registry;
+
 	/**
 	 * Property for the logger.
 	 *
 	 * @var Email_Editor_Logger Logger instance.
 	 */
 	private Email_Editor_Logger $logger;
-	/**
-	 * Property for Assets Manager that should be initialized.
-	 *
-	 * @var Assets_Manager Assets manager instance.
-	 */
-	private Assets_Manager $assets_manager;
 
 	/**
 	 * Constructor.
@@ -76,7 +72,6 @@ class Email_Editor {
 	 * @param Send_Preview_Email            $send_preview_email Preview email controller.
 	 * @param Personalization_Tags_Registry $personalization_tags_controller Personalization tags registry that allows initializing personalization tags.
 	 * @param Email_Editor_Logger           $logger Logger instance.
-	 * @param Assets_Manager                $assets_manager Assets manager instance.
 	 */
 	public function __construct(
 		Email_Api_Controller $email_api_controller,
@@ -84,8 +79,7 @@ class Email_Editor {
 		Patterns $patterns,
 		Send_Preview_Email $send_preview_email,
 		Personalization_Tags_Registry $personalization_tags_controller,
-		Email_Editor_Logger $logger,
-		Assets_Manager $assets_manager
+		Email_Editor_Logger $logger
 	) {
 		$this->email_api_controller          = $email_api_controller;
 		$this->templates                     = $templates;
@@ -93,7 +87,6 @@ class Email_Editor {
 		$this->send_preview_email            = $send_preview_email;
 		$this->personalization_tags_registry = $personalization_tags_controller;
 		$this->logger                        = $logger;
-		$this->assets_manager                = $assets_manager;
 	}
 
 	/**
@@ -105,7 +98,7 @@ class Email_Editor {
 		$this->logger->info( 'Initializing email editor' );
 		do_action( 'woocommerce_email_editor_initialized' );
 		add_filter( 'woocommerce_email_editor_rendering_theme_styles', array( $this, 'extend_email_theme_styles' ), 10, 2 );
-
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
 		$this->register_block_patterns();
 		$this->register_email_post_types();
 		$this->register_block_templates();
@@ -114,8 +107,6 @@ class Email_Editor {
 		$is_editor_page = apply_filters( 'woocommerce_is_email_editor_page', false );
 		if ( $is_editor_page ) {
 			$this->extend_email_post_api();
-			// Initialize the assets manager.
-			$this->assets_manager->initialize();
 		}
 		add_action( 'rest_api_init', array( $this, 'register_email_editor_api_routes' ) );
 		add_filter( 'woocommerce_email_editor_send_preview_email', array( $this->send_preview_email, 'send_preview_email' ), 11, 1 ); // allow for other filter methods to take precedent.
@@ -294,6 +285,16 @@ class Email_Editor {
 			$theme->merge( new WP_Theme_JSON( $email_theme ) );
 		}
 		return $theme;
+	}
+
+	/**
+	 * Enqueue admin styles that are needed by the email editor.
+	 *
+	 * @return void
+	 */
+	public function enqueue_admin_styles(): void {
+		// Calling action that loads registered blockTypes.
+		do_action( 'enqueue_block_editor_assets' );
 	}
 
 	/**

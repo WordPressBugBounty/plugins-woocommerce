@@ -694,10 +694,6 @@ class WC_Helper_Updater {
 				continue;
 			}
 
-			if ( ! is_plugin_active( $plugin['_filename'] ) ) {
-				continue;
-			}
-
 			if ( version_compare( $plugin['Version'], $update_data[ $plugin['_product_id'] ]['version'], '<' ) ) {
 				++$count;
 			}
@@ -706,10 +702,6 @@ class WC_Helper_Updater {
 		// Scan local themes.
 		foreach ( WC_Helper::get_local_woo_themes() as $theme ) {
 			if ( empty( $update_data[ $theme['_product_id'] ] ) ) {
-				continue;
-			}
-
-			if ( get_stylesheet() !== $theme['_stylesheet'] ) {
 				continue;
 			}
 

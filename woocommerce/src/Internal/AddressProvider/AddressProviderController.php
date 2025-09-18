@@ -23,15 +23,6 @@ class AddressProviderController {
 	private $preferred_provider_option;
 
 	/**
-	 * Constructor.
-	 *
-	 * @internal
-	 */
-	public function __construct() {
-		add_action( 'init', array( $this, 'init' ) );
-	}
-
-	/**
 	 * Init function runs after this provider was added to DI container.
 	 *
 	 * @internal

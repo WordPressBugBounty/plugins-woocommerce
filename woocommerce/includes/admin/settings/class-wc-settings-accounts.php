@@ -390,12 +390,9 @@ class WC_Settings_Accounts extends WC_Settings_Page {
 
 			// Tracks for customize link.
 			if ( typeof window?.wcTracks?.recordEvent === "function" ) {
-				const customizeLink = document.querySelector("a.delayed-account-creation-customize-link");
-				if ( customizeLink ) {
-					customizeLink.addEventListener("click", function() {
-						window.wcTracks.recordEvent("delayed_account_creation_customize_link_clicked");
-					});
-				}
+				document.querySelector("a.delayed-account-creation-customize-link").addEventListener("click", function() {
+					window.wcTracks.recordEvent("delayed_account_creation_customize_link_clicked");
+				});
 			}
 		'
 		);

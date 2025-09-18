@@ -6,7 +6,6 @@ namespace Automattic\WooCommerce\Internal\EmailEditor\PersonalizationTags;
 
 use Automattic\WooCommerce\EmailEditor\Engine\PersonalizationTags\Personalization_Tag;
 use Automattic\WooCommerce\EmailEditor\Engine\PersonalizationTags\Personalization_Tags_Registry;
-use Automattic\WooCommerce\Internal\EmailEditor\Integration;
 
 /**
  * Provider for store-related personalization tags.
@@ -32,9 +31,6 @@ class StoreTagsProvider extends AbstractTagProvider {
 					}
 					return get_option( 'admin_email' );
 				},
-				array(),
-				null,
-				array( Integration::EMAIL_POST_TYPE ),
 			)
 		);
 
@@ -46,9 +42,6 @@ class StoreTagsProvider extends AbstractTagProvider {
 				function (): string {
 					return esc_attr( wc_get_page_permalink( 'shop' ) );
 				},
-				array(),
-				null,
-				array( Integration::EMAIL_POST_TYPE ),
 			)
 		);
 
@@ -64,9 +57,6 @@ class StoreTagsProvider extends AbstractTagProvider {
 
 					return wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 				},
-				array(),
-				null,
-				array( Integration::EMAIL_POST_TYPE ),
 			)
 		);
 
@@ -78,9 +68,6 @@ class StoreTagsProvider extends AbstractTagProvider {
 				function (): string {
 					return WC()->mailer->get_store_address() ?? '';
 				},
-				array(),
-				null,
-				array( Integration::EMAIL_POST_TYPE ),
 			)
 		);
 
@@ -92,9 +79,6 @@ class StoreTagsProvider extends AbstractTagProvider {
 				function (): string {
 					return esc_attr( wc_get_page_permalink( 'myaccount' ) );
 				},
-				array(),
-				null,
-				array( Integration::EMAIL_POST_TYPE ),
 			)
 		);
 
@@ -109,9 +93,6 @@ class StoreTagsProvider extends AbstractTagProvider {
 					}
 					return '';
 				},
-				array(),
-				null,
-				array( Integration::EMAIL_POST_TYPE ),
 			)
 		);
 	}
