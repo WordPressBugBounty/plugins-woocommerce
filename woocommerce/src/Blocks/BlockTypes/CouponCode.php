@@ -25,11 +25,6 @@ class CouponCode extends AbstractBlock {
 	protected $block_name = 'coupon-code';
 
 	/**
-	 * Placeholder displayed in the editor and in non-email rendering for auto-generated coupons.
-	 */
-	const COUPON_CODE_PLACEHOLDER = 'XXXX-XXXXXX-XXXX';
-
-	/**
 	 * Default styles for the coupon code element.
 	 */
 	private const DEFAULT_STYLES = array(
@@ -71,19 +66,6 @@ class CouponCode extends AbstractBlock {
 	}
 
 	/**
-	 * Expose coupon types to the editor JS via AssetDataRegistry.
-	 *
-	 * @param array $attributes Block attributes.
-	 */
-	protected function enqueue_data( array $attributes = array() ): void {
-		parent::enqueue_data( $attributes );
-
-		if ( ! $this->asset_data_registry->exists( 'couponTypes' ) && function_exists( 'wc_get_coupon_types' ) ) {
-			$this->asset_data_registry->add( 'couponTypes', wc_get_coupon_types() );
-		}
-	}
-
-	/**
 	 * Render the coupon code block.
 	 *
 	 * @param array         $attributes Block attributes.
@@ -94,13 +76,7 @@ class CouponCode extends AbstractBlock {
 	protected function render( $attributes, $content, $block ) {
 		$parsed_block = $block instanceof WP_Block ? $block->parsed_block : array();
 		$attributes   = $this->get_block_attributes( $parsed_block, $attributes );
-		$source       = $attributes['source'] ?? 'createNew';
-
-		if ( 'createNew' === $source ) {
-			$coupon_code = self::COUPON_CODE_PLACEHOLDER;
-		} else {
-			$coupon_code = $this->get_coupon_code( $attributes );
-		}
+		$coupon_code  = $this->get_coupon_code( $attributes );
 
 		if ( empty( $coupon_code ) ) {
 			return '';

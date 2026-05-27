@@ -9,7 +9,6 @@
  * @since   2.6.0
  */
 
-use Automattic\WooCommerce\Utilities\MetaDataUtil;
 use Automattic\WooCommerce\Utilities\StringUtil;
 
 defined( 'ABSPATH' ) || exit;
@@ -310,7 +309,11 @@ class WC_REST_Coupons_V2_Controller extends WC_REST_CRUD_Controller {
 						$coupon->set_code( $coupon_code );
 						break;
 					case 'meta_data':
-						MetaDataUtil::update( $value, $coupon );
+						if ( is_array( $value ) ) {
+							foreach ( $value as $meta ) {
+								$coupon->update_meta_data( $meta['key'], $meta['value'], isset( $meta['id'] ) ? $meta['id'] : '' );
+							}
+						}
 						break;
 					case 'description':
 						$coupon->set_description( wp_filter_post_kses( $value ) );

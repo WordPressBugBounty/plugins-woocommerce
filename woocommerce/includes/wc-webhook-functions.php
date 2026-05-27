@@ -117,13 +117,7 @@ function wc_is_webhook_valid_topic( $topic ) {
 	}
 
 	$valid_resources = apply_filters( 'woocommerce_valid_webhook_resources', array( 'coupon', 'customer', 'order', 'product' ) );
-	/**
-	 * Filters the list of valid webhook events.
-	 *
-	 * @since 2.2.0
-	 * @param array $valid_events Array of valid webhook events.
-	 */
-	$valid_events = apply_filters( 'woocommerce_valid_webhook_events', array( 'created', 'updated', 'deleted', 'restored', 'published' ) );
+	$valid_events    = apply_filters( 'woocommerce_valid_webhook_events', array( 'created', 'updated', 'deleted', 'restored' ) );
 
 	if ( in_array( $data[0], $valid_resources, true ) && in_array( $data[1], $valid_events, true ) ) {
 		return true;

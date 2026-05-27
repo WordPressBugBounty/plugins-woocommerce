@@ -12,7 +12,6 @@ namespace Automattic\WooCommerce\Internal\RestApi\Routes\V4\Orders\Schema;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Internal\RestApi\Routes\V4\AbstractSchema;
-use Automattic\WooCommerce\Enums\OrderItemType;
 use Automattic\WooCommerce\Enums\OrderStatus;
 use Automattic\WooCommerce\Internal\CostOfGoodsSold\CogsAwareTrait;
 use Automattic\WooCommerce\Utilities\OrderUtil;
@@ -654,7 +653,7 @@ class OrderSchema extends AbstractSchema {
 		}
 
 		if ( in_array( 'line_items', $include_fields, true ) ) {
-			$line_items         = $order->get_items( OrderItemType::LINE_ITEM );
+			$line_items         = $order->get_items( 'line_item' );
 			$data['line_items'] = array();
 			foreach ( $line_items as $line_item ) {
 				$data['line_items'][] = $this->order_item_schema->get_item_response( $line_item, $request );
@@ -662,7 +661,7 @@ class OrderSchema extends AbstractSchema {
 		}
 
 		if ( in_array( 'shipping_lines', $include_fields, true ) ) {
-			$line_items             = $order->get_items( OrderItemType::SHIPPING );
+			$line_items             = $order->get_items( 'shipping' );
 			$data['shipping_lines'] = array();
 			foreach ( $line_items as $line_item ) {
 				$data['shipping_lines'][] = $this->order_shipping_schema->get_item_response( $line_item, $request );
@@ -670,7 +669,7 @@ class OrderSchema extends AbstractSchema {
 		}
 
 		if ( in_array( 'coupon_lines', $include_fields, true ) ) {
-			$line_items           = $order->get_items( OrderItemType::COUPON );
+			$line_items           = $order->get_items( 'coupon' );
 			$data['coupon_lines'] = array();
 			foreach ( $line_items as $line_item ) {
 				$data['coupon_lines'][] = $this->order_coupon_schema->get_item_response( $line_item, $request );
@@ -678,7 +677,7 @@ class OrderSchema extends AbstractSchema {
 		}
 
 		if ( in_array( 'fee_lines', $include_fields, true ) ) {
-			$line_items        = $order->get_items( OrderItemType::FEE );
+			$line_items        = $order->get_items( 'fee' );
 			$data['fee_lines'] = array();
 			foreach ( $line_items as $line_item ) {
 				$data['fee_lines'][] = $this->order_fee_schema->get_item_response( $line_item, $request );
@@ -686,7 +685,7 @@ class OrderSchema extends AbstractSchema {
 		}
 
 		if ( in_array( 'tax_lines', $include_fields, true ) ) {
-			$line_items        = $order->get_items( OrderItemType::TAX );
+			$line_items        = $order->get_items( 'tax' );
 			$data['tax_lines'] = array();
 			foreach ( $line_items as $line_item ) {
 				$data['tax_lines'][] = $this->order_tax_schema->get_item_response( $line_item, $request );

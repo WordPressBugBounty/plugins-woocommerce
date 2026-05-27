@@ -320,7 +320,7 @@ jQuery( function ( $ ) {
 
 			if ( $( this ).is( ':checked' ) ) {
 				// Ensure password is not pre-populated.
-				$( '#account_password' ).val( '' );
+				$( '#account_password' ).val( '' ).trigger( 'change' );
 				$( 'div.create-account' ).slideDown();
 			}
 		},

@@ -11,7 +11,6 @@
 
 use Automattic\Jetpack\Constants;
 use Automattic\WooCommerce\Admin\Features\Features;
-use Automattic\WooCommerce\Enums\DefaultCustomerAddress;
 use Automattic\WooCommerce\Internal\AddressProvider\AddressProviderController;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -544,7 +543,7 @@ class WC_Frontend_Scripts {
 		// Only enqueue the geolocation script if the Default Current Address is set to "Geolocate
 		// (with Page Caching Support) and outside of the cart, checkout, account and customizer preview.
 		if (
-			DefaultCustomerAddress::GEOLOCATION_AJAX === get_option( 'woocommerce_default_customer_address' )
+			'geolocation_ajax' === get_option( 'woocommerce_default_customer_address' )
 			&& ! ( is_cart() || is_account_page() || is_checkout() || is_customize_preview() )
 		) {
 			$ua = strtolower( wc_get_user_agent() ); // Exclude common bots from geolocation by user agent.

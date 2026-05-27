@@ -7,7 +7,6 @@
  */
 
 use Automattic\Jetpack\Constants;
-use Automattic\WooCommerce\Enums\DefaultCustomerAddress;
 use Automattic\WooCommerce\Internal\Utilities\Users;
 use Automattic\WooCommerce\Internal\Utilities\WebhookUtil;
 
@@ -608,7 +607,7 @@ class WC_Admin_Notices {
 	public static function add_maxmind_missing_license_key_notice() {
 		$default_address = get_option( 'woocommerce_default_customer_address' );
 
-		if ( ! in_array( $default_address, array( DefaultCustomerAddress::GEOLOCATION, DefaultCustomerAddress::GEOLOCATION_AJAX ), true ) ) {
+		if ( ! in_array( $default_address, array( 'geolocation', 'geolocation_ajax' ), true ) ) {
 			return;
 		}
 

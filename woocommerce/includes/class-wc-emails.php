@@ -11,7 +11,6 @@
 declare( strict_types = 1 );
 
 use Automattic\Jetpack\Constants;
-use Automattic\WooCommerce\Internal\Email\DeferredEmailQueue;
 use Automattic\WooCommerce\Blocks\Package;
 use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
 use Automattic\WooCommerce\Enums\ProductType;
@@ -40,12 +39,11 @@ class WC_Emails {
 	protected static $instance = null;
 
 	/**
-	 * Deferred email queue instance.
+	 * Background emailer class.
 	 *
-	 * @since 10.8.0
-	 * @var DeferredEmailQueue|null
+	 * @var WC_Background_Emailer
 	 */
-	protected static $deferred_queue = null;
+	protected static $background_emailer = null;
 
 	/**
 	 * Main WC_Emails Instance.
@@ -119,14 +117,11 @@ class WC_Emails {
 				'woocommerce_order_status_failed',
 				'woocommerce_order_fully_refunded',
 				'woocommerce_order_partially_refunded',
-				'woocommerce_send_review_request',
 				'woocommerce_new_customer_note',
 				'woocommerce_created_customer',
 				'woocommerce_payment_gateway_enabled',
 			)
 		);
-
-		$defer_default = FeaturesUtil::feature_is_enabled( 'deferred_transactional_emails' );
 
 		/**
 		 * Filter whether to defer transactional emails.
@@ -134,8 +129,8 @@ class WC_Emails {
 		 * @since 3.0.0
 		 * @param bool $defer Whether to defer transactional emails.
 		 */
-		if ( apply_filters( 'woocommerce_defer_transactional_emails', $defer_default ) ) {
-			self::$deferred_queue = wc_get_container()->get( DeferredEmailQueue::class );
+		if ( apply_filters( 'woocommerce_defer_transactional_emails', false ) ) {
+			self::$background_emailer = new WC_Background_Emailer();
 
 			foreach ( $email_actions as $action ) {
 				add_action( $action, array( __CLASS__, 'queue_transactional_email' ), 10, 10 );
@@ -155,8 +150,13 @@ class WC_Emails {
 	 * @return void
 	 */
 	public static function queue_transactional_email( ...$args ) {
-		if ( self::$deferred_queue instanceof DeferredEmailQueue ) {
-			self::$deferred_queue->push( current_filter(), $args );
+		if ( is_a( self::$background_emailer, 'WC_Background_Emailer' ) ) {
+			self::$background_emailer->push_to_queue(
+				array(
+					'filter' => current_filter(),
+					'args'   => func_get_args(),
+				)
+			);
 		} else {
 			self::send_transactional_email( ...$args );
 		}
@@ -307,11 +307,8 @@ class WC_Emails {
 			$emails['WC_Email_Customer_Fulfillment_Updated'] = __DIR__ . '/emails/class-wc-email-customer-fulfillment-updated.php';
 			$emails['WC_Email_Customer_Fulfillment_Deleted'] = __DIR__ . '/emails/class-wc-email-customer-fulfillment-deleted.php';
 		}
-		if ( FeaturesUtil::feature_is_enabled( 'customer_review_request' ) ) {
-			$emails['WC_Email_Customer_Review_Request'] = __DIR__ . '/emails/class-wc-email-customer-review-request.php';
-		}
 
-		// Prime caches to reduce future queries.
+		// Preload the options which will be used when emails are getting initialized in the loop below (reduces the number of SQL-queries).
 		wp_prime_option_caches(
 			array_map(
 				fn( string $class_name ) => sprintf( 'woocommerce_%s_settings', strtolower( str_replace( 'WC_Email_', '', $class_name ) ) ),
@@ -397,10 +394,6 @@ class WC_Emails {
 	 * @return string       Email footer text with any replacements done.
 	 */
 	public function replace_placeholders( $text ) {
-		if ( ! is_string( $text ) ) {
-			$text = is_scalar( $text ) ? (string) $text : '';
-		}
-
 		$domain = wp_parse_url( home_url(), PHP_URL_HOST );
 
 		return str_replace(

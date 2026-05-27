@@ -9,8 +9,6 @@ namespace Automattic\WooCommerce\Admin\Overrides;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Enums\OrderItemType;
-
 /**
  * OrderTraits class.
  */
@@ -76,7 +74,7 @@ trait OrderTraits {
 
 		if ( null === $shipping_tax_amount ) {
 			$order_taxes         = $this->get_taxes();
-			$line_items_shipping = $this->get_items( OrderItemType::SHIPPING );
+			$line_items_shipping = $this->get_items( 'shipping' );
 			foreach ( $line_items_shipping as $item_id => $shipping_item ) {
 				$tax_data = $shipping_item->get_taxes();
 				if ( $tax_data ) {

@@ -14,6 +14,7 @@
     },
     "layout": {
       "contentSize": "660px",
+      "wideSize": "",
       "allowEditing": false,
       "allowCustomContentAndWideSize": false
     },
@@ -33,7 +34,7 @@
         },
         {
           "name": "2",
-          "size": "24px",
+          "size": "20px",
           "slug": "20"
         },
         {
@@ -184,11 +185,6 @@
           "name": "Pacifico",
           "slug": "pacifico",
           "fontFamily": "Pacifico, 'Arial Narrow', Arial, sans-serif"
-        },
-        {
-          "name": "Inter",
-          "slug": "inter",
-          "fontFamily": "Inter, 'Helvetica Neue', Arial, sans-serif"
         }
       ],
       "fontSizes": [
@@ -225,10 +221,10 @@
     "spacing": {
       "blockGap": "16px",
       "padding": {
-        "bottom": "24px",
-        "left": "24px",
-        "right": "24px",
-        "top": "24px"
+        "bottom": "20px",
+        "left": "20px",
+        "right": "20px",
+        "top": "20px"
       }
     },
     "color": {
@@ -236,7 +232,7 @@
       "text": "#1e1e1e"
     },
     "typography": {
-      "fontFamily": "Inter, 'Helvetica Neue', Arial, sans-serif",
+      "fontFamily": "Arial, 'Helvetica Neue', Helvetica, sans-serif",
       "fontSize": "16px",
       "fontWeight": "400",
       "fontStyle": "normal",
@@ -245,28 +241,11 @@
       "textDecoration": "none",
       "textTransform": "none"
     },
-    "blocks": {
-      "core/site-title": {
-        "typography": {
-          "fontSize": "11px",
-          "fontWeight": "500",
-          "letterSpacing": "0.55px",
-          "textTransform": "uppercase"
-        },
-        "color": {
-          "text": "#757575"
-        }
-      }
-    },
     "elements": {
-      "button": {
-        "border": {
-          "radius": "0px"
-        }
-      },
       "heading": {
         "typography": {
-          "fontWeight": "700",
+          "fontFamily": "Arial, 'Helvetica Neue', Helvetica, sans-serif",
+          "fontWeight": "400",
           "fontStyle": "normal",
           "lineHeight": "1.2"
         }

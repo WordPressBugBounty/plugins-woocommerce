@@ -16,7 +16,6 @@ defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Internal\RestApi\Routes\V4\AbstractController;
 use Automattic\WooCommerce\StoreApi\Utilities\Pagination;
 use Automattic\WooCommerce\Internal\RestApi\Routes\V4\Refunds\Schema\RefundSchema;
-use Automattic\WooCommerce\Utilities\MetaDataUtil;
 use Automattic\WooCommerce\Utilities\NumberUtil;
 use WP_Http;
 use WP_Error;
@@ -342,8 +341,10 @@ class Controller extends AbstractController {
 				return $this->get_route_error_response( 'cannot_create_refund', $refund->get_error_message() );
 			}
 
-			if ( ! empty( $request['meta_data'] ) ) {
-				MetaDataUtil::update( $request['meta_data'], $refund );
+			if ( ! empty( $request['meta_data'] ) && is_array( $request['meta_data'] ) ) {
+				foreach ( $request['meta_data'] as $meta ) {
+					$refund->update_meta_data( $meta['key'], $meta['value'], isset( $meta['id'] ) ? $meta['id'] : '' );
+				}
 				$refund->save_meta_data();
 			}
 

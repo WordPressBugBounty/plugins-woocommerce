@@ -6,7 +6,6 @@
  */
 
 use Automattic\WooCommerce\Admin\Features\Features;
-use Automattic\WooCommerce\Enums\DefaultCustomerAddress;
 use Automattic\WooCommerce\Internal\AddressProvider\AddressProviderController;
 
 defined( 'ABSPATH' ) || exit;
@@ -234,14 +233,14 @@ class WC_Settings_General extends WC_Settings_Page {
 					'title'    => __( 'Default customer location', 'woocommerce' ),
 					'id'       => 'woocommerce_default_customer_address',
 					'desc_tip' => __( 'This option determines a customers default location. The MaxMind GeoLite Database will be periodically downloaded to your wp-content directory if using geolocation.', 'woocommerce' ),
-					'default'  => DefaultCustomerAddress::BASE,
+					'default'  => 'base',
 					'type'     => 'select',
 					'class'    => 'wc-enhanced-select',
 					'options'  => array(
-						DefaultCustomerAddress::NO_DEFAULT => __( 'No location by default', 'woocommerce' ),
-						DefaultCustomerAddress::BASE => __( 'Shop country/region', 'woocommerce' ),
-						DefaultCustomerAddress::GEOLOCATION => __( 'Geolocate', 'woocommerce' ),
-						DefaultCustomerAddress::GEOLOCATION_AJAX => __( 'Geolocate (with page caching support)', 'woocommerce' ),
+						''                 => __( 'No location by default', 'woocommerce' ),
+						'base'             => __( 'Shop country/region', 'woocommerce' ),
+						'geolocation'      => __( 'Geolocate', 'woocommerce' ),
+						'geolocation_ajax' => __( 'Geolocate (with page caching support)', 'woocommerce' ),
 					),
 				),
 

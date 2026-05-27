@@ -15,15 +15,19 @@ defined( 'ABSPATH' ) || exit;
  */
 class NewReviewNotification extends Notification {
 	/**
-	 * The notification type identifier for new reviews.
+	 * The notification type identifier.
 	 */
 	const TYPE = 'store_review';
 
 	/**
-	 * {@inheritDoc}
+	 * Creates a new review notification.
+	 *
+	 * @param int $comment_id The comment ID.
+	 *
+	 * @since 10.7.0
 	 */
-	public function get_type(): string {
-		return self::TYPE;
+	public function __construct( int $comment_id ) {
+		parent::__construct( self::TYPE, $comment_id );
 	}
 
 	/**
@@ -43,24 +47,22 @@ class NewReviewNotification extends Notification {
 		}
 
 		return array(
-			'type'        => $this->get_type(),
+			'type'        => self::TYPE,
 			// This represents the time the notification was triggered, so we can monitor age of notification at delivery.
 			'timestamp'   => gmdate( 'c' ),
 			'resource_id' => $this->get_resource_id(),
 			'title'       => array(
+				'format' => 'You have a new review! ⭐️',
+			),
+			'message'     => array(
 				/**
 				 * This will be translated in WordPress.com, format:
-				 * 1: reviewer name, 2: product name
+				 * 1: reviewer name, 2: product name, 3: comment content
 				 */
-				'format' => '%1$s left a review on %2$s',
+				'format' => '%1$s left a review on %2$s: %3$s',
 				'args'   => array(
 					wp_strip_all_tags( $comment->comment_author ),
 					wp_strip_all_tags( get_the_title( (int) $comment->comment_post_ID ) ),
-				),
-			),
-			'message'     => array(
-				'format' => '%1$s',
-				'args'   => array(
 					wp_strip_all_tags( $comment->comment_content ),
 				),
 			),
@@ -69,32 +71,5 @@ class NewReviewNotification extends Notification {
 				'comment_id' => $this->get_resource_id(),
 			),
 		);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @param string $key The meta key.
-	 */
-	public function has_meta( string $key ): bool {
-		return WC()->call_function( 'metadata_exists', 'comment', $this->get_resource_id(), $key );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @param string $key The meta key.
-	 */
-	public function write_meta( string $key ): void {
-		WC()->call_function( 'update_comment_meta', $this->get_resource_id(), $key, (string) time() );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @param string $key The meta key.
-	 */
-	public function delete_meta( string $key ): void {
-		WC()->call_function( 'delete_comment_meta', $this->get_resource_id(), $key );
 	}
 }

@@ -12,7 +12,6 @@ use Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
 use Automattic\WooCommerce\Admin\API\Reports\SqlQuery;
 use Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
-use Automattic\WooCommerce\Enums\OrderItemType;
 
 /**
  * API\Reports\Taxes\DataStore.
@@ -275,7 +274,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return -1;
 		}
 
-		$tax_items   = $order->get_items( OrderItemType::TAX );
+		$tax_items   = $order->get_items( 'tax' );
 		$num_updated = 0;
 
 		foreach ( $tax_items as $tax_item ) {
