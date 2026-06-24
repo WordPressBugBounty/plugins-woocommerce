@@ -85,9 +85,7 @@ class DataRetentionController {
 
 		foreach ( $overdue_notifications as $notification_id ) {
 			$notification = Factory::get_notification( $notification_id );
-			if ( $notification instanceof Notification ) {
-				$notification->delete();
-			}
+			$notification->delete();
 		}
 	}
 }

@@ -344,13 +344,14 @@ abstract class WC_Payment_Gateway extends WC_Settings_API {
 	 * @return bool
 	 */
 	public function is_available() {
-		$is_available = 'yes' === $this->enabled;
+		if ( 'yes' !== $this->enabled ) {
+			return false;
+		}
 
-		if ( $is_available && WC()->cart ) {
-			$order_total = $this->get_order_total();
-			if ( 0 < $order_total && 0 < $this->max_amount && $order_total > $this->max_amount ) {
-				$is_available = false;
-			}
+		$is_available = true;
+
+		if ( WC()->cart && 0 < $this->get_order_total() && 0 < $this->max_amount && $this->max_amount < $this->get_order_total() ) {
+			$is_available = false;
 		}
 
 		return $is_available;

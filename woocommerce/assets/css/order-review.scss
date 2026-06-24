@@ -39,14 +39,6 @@
 		}
 	}
 
-	&__item-variation {
-		display: block;
-		margin-top: 0.25em;
-		font-size: 0.875em;
-		font-weight: 400;
-		opacity: 0.75;
-	}
-
 	&__item-row {
 		display: flex;
 		gap: 1.5em;
@@ -88,7 +80,7 @@
 	}
 
 	&__item-rating-error {
-		margin: 0.5em 0 1em;
+		margin: 0.5em 0 0;
 		color: var(--wc-red, #a00);
 	}
 
@@ -96,7 +88,7 @@
 		margin: 0.5em 0 0;
 
 		&--ok {
-			color: var(--wc-green, #007518);
+			color: var(--wc-green, #008a20);
 		}
 
 		&--error {

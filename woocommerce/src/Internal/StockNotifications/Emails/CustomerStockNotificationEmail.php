@@ -6,7 +6,6 @@ namespace Automattic\WooCommerce\Internal\StockNotifications\Emails;
 
 use Automattic\WooCommerce\Internal\StockNotifications\Notification;
 use Automattic\WooCommerce\Internal\StockNotifications\Factory;
-use Automattic\WooCommerce\Internal\StockNotifications\Utilities\UtmHelper;
 use WC_Email;
 
 /**
@@ -154,6 +153,11 @@ class CustomerStockNotificationEmail extends WC_Email {
 		 */
 		$button_text = apply_filters( 'woocommerce_email_stock_notification_button_text', _x( 'Shop Now', 'Email notification', 'woocommerce' ), $notification, $product );
 
+		$query_args = array(
+			'utm_source' => 'back-in-stock-notifications',
+			'utm_medium' => 'email',
+		);
+
 		/**
 		 * Filter the button href.
 		 *
@@ -165,7 +169,10 @@ class CustomerStockNotificationEmail extends WC_Email {
 		 */
 		$button_link = apply_filters(
 			'woocommerce_email_stock_notification_button_link',
-			UtmHelper::add_email_utm_params( $notification->get_product_permalink() ),
+			add_query_arg(
+				$query_args,
+				$notification->get_product_permalink()
+			),
 			$notification,
 			$product
 		);
@@ -177,15 +184,12 @@ class CustomerStockNotificationEmail extends WC_Email {
 		return array(
 			'button_text'      => $button_text,
 			'button_link'      => $button_link,
-			'unsubscribe_link' => UtmHelper::add_email_utm_params(
-				add_query_arg(
-					array(
-						'email_link_action'     => EmailActionController::ACTION_UNSUBSCRIBE,
-						'email_link_action_key' => $unsubscribe_key,
-						'notification_id'       => $notification->get_id(),
-					),
-					get_option( 'siteurl' )
-				)
+			'unsubscribe_link' => add_query_arg(
+				array(
+					'email_link_action_key' => $unsubscribe_key,
+					'notification_id'       => $notification->get_id(),
+				),
+				get_option( 'siteurl' )
 			),
 			'is_guest'         => $is_guest,
 		);

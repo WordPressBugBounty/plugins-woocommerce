@@ -785,13 +785,13 @@ class Notes extends \WC_REST_CRUD_Controller {
 					'readonly'    => true,
 				),
 				'layout'            => array(
-					'description' => __( 'Deprecated. Always returns "plain". Inbox notes no longer support layout variants; this field will be removed in a future release.', 'woocommerce' ),
+					'description' => __( 'The layout of the note (e.g. banner, thumbnail, plain).', 'woocommerce' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
 				'image'             => array(
-					'description' => __( 'Deprecated. Always returns an empty string. Inbox notes no longer render images; this field will be removed in a future release.', 'woocommerce' ),
+					'description' => __( 'The image of the note, if any.', 'woocommerce' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,

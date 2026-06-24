@@ -163,7 +163,7 @@ class Gallery extends Abstract_Block_Renderer {
 			array(
 				'width'           => '100%',
 				'border-collapse' => 'collapse',
-				'text-align'      => $rendering_context->get_default_text_align(),
+				'text-align'      => 'left',
 			)
 		);
 
@@ -171,7 +171,7 @@ class Gallery extends Abstract_Block_Renderer {
 		$table_attrs = array(
 			'class' => 'email-block-gallery ' . Html_Processing_Helper::clean_css_classes( $original_wrapper_classname ),
 			'style' => $block_styles['css'],
-			'align' => $rendering_context->get_default_text_align(),
+			'align' => 'left',
 			'width' => '100%',
 		);
 

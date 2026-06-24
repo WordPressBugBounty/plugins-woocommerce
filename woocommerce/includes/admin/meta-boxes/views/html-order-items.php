@@ -449,7 +449,7 @@ if ( wc_tax_enabled() ) {
 					</form>
 				</article>
 				<footer>
-					<div class="wc-backbone-modal-buttons">
+					<div class="inner">
 						<button id="btn-ok" class="button button-primary button-large"><?php esc_html_e( 'Add', 'woocommerce' ); ?></button>
 					</div>
 				</footer>
@@ -505,7 +505,7 @@ if ( wc_tax_enabled() ) {
 					</form>
 				</article>
 				<footer>
-					<div class="wc-backbone-modal-buttons">
+					<div class="inner">
 						<button id="btn-ok" class="button button-primary button-large"><?php esc_html_e( 'Add', 'woocommerce' ); ?></button>
 					</div>
 				</footer>

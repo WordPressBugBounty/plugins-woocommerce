@@ -69,7 +69,7 @@ class Product_Image extends Abstract_Product_Block_Renderer {
 	private function process_inner_blocks( array $parsed_block, \WC_Product $product, Rendering_Context $rendering_context ): array {
 		$badges          = '';
 		$other_content   = '';
-		$badge_alignment = $rendering_context->get_default_text_align();
+		$badge_alignment = 'left';
 
 		if ( ! empty( $parsed_block['innerBlocks'] ) ) {
 			foreach ( $parsed_block['innerBlocks'] as $inner_block ) {
@@ -78,7 +78,7 @@ class Product_Image extends Abstract_Product_Block_Renderer {
 
 				if ( 'woocommerce/product-sale-badge' === $inner_block['blockName'] ) {
 					$badges         .= $this->render_overlay_badge( $inner_block, $product, $rendering_context );
-					$badge_alignment = $rendering_context->resolve_text_align( $inner_block['attrs']['align'] ?? null );
+					$badge_alignment = $inner_block['attrs']['align'] ?? 'left';
 				} else {
 					$other_content .= render_block( $inner_block );
 				}
@@ -436,7 +436,7 @@ class Product_Image extends Abstract_Product_Block_Renderer {
 
 		// Map block alignment to valid HTML/CSS alignment values.
 		// "full" is not a valid text-align or table align value.
-		$css_align = $is_full ? 'center' : $rendering_context->resolve_text_align( $align ? $align : null );
+		$css_align = $is_full ? 'center' : ( $align ? $align : 'left' );
 
 		$wrapper_styles = array(
 			'border-collapse' => 'separate',

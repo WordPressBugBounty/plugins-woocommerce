@@ -70,6 +70,7 @@ class WC_Order_Query extends WC_Object_Query {
 				'customer_ip_address'  => '',
 				'customer_user_agent'  => '',
 				'created_via'          => '',
+				'customer_note'        => '',
 			)
 		);
 	}

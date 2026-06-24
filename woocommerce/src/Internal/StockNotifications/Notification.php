@@ -9,6 +9,7 @@ namespace Automattic\WooCommerce\Internal\StockNotifications;
 
 use Automattic\WooCommerce\Internal\StockNotifications\Enums\NotificationStatus;
 use Automattic\WooCommerce\Internal\StockNotifications\Enums\NotificationCancellationSource;
+use Automattic\WooCommerce\Internal\StockNotifications\Utilities\HasherHelper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -458,7 +459,7 @@ class Notification extends \WC_Data {
 	 * @return bool True if the key is valid, false otherwise.
 	 */
 	public function check_verification_key( string $key ): bool {
-		$action_key = (string) $this->get_meta( 'verification_action_key' );
+		$action_key = $this->get_meta( 'email_link_action_key' );
 
 		if ( ! str_contains( $action_key, ':' ) ) {
 			return false;
@@ -471,18 +472,20 @@ class Notification extends \WC_Data {
 			return false;
 		}
 
-		return wp_verify_fast_hash( $key, $hash );
+		return HasherHelper::wp_verify_fast_hash( $key, $hash );
 	}
 
 	/**
-	 * Generate a verification key and store its hash.
+	 * Maybe setup verification data for the notification.
+	 *
+	 * This is used to ensure that the notification has valid verification data.
 	 *
 	 * @param bool $persist If true, save the changes to the database.
 	 * @return string The generated verification key.
 	 */
 	public function get_verification_key( bool $persist ): string {
 		$key = wp_generate_password( 20, false );
-		$this->update_meta_data( 'verification_action_key', time() . ':' . wp_fast_hash( $key ) );
+		$this->update_meta_data( 'email_link_action_key', time() . ':' . HasherHelper::wp_fast_hash( $key ) );
 
 		if ( $persist ) {
 			$this->save();
@@ -498,22 +501,21 @@ class Notification extends \WC_Data {
 	 * @return bool True if the key is valid, false otherwise.
 	 */
 	public function check_unsubscribe_key( string $key ): bool {
-		$stored = (string) $this->get_meta( 'unsubscribe_action_key' );
-		if ( '' === $stored ) {
-			return false;
-		}
-		return wp_verify_fast_hash( $key, $stored );
+		return HasherHelper::wp_verify_fast_hash( $key, $this->get_meta( 'email_link_action_key' ) );
 	}
 
 	/**
-	 * Generate an unsubscribe key and store its hash.
+	 * Maybe setup verification data for the notification.
+	 *
+	 * This is used to ensure that the notification has valid verification data.
 	 *
 	 * @param bool $persist If true, save the changes to the database.
 	 * @return string The generated unsubscribe key.
 	 */
 	public function get_unsubscribe_key( bool $persist ): string {
-		$key = wp_generate_password( 20, false );
-		$this->update_meta_data( 'unsubscribe_action_key', wp_fast_hash( $key ) );
+		$key  = wp_generate_password( 20, false );
+		$hash = HasherHelper::wp_fast_hash( $key );
+		$this->update_meta_data( 'email_link_action_key', $hash );
 
 		if ( $persist ) {
 			$this->save();

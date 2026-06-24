@@ -71,7 +71,7 @@ class Config {
 	}
 
 	/**
-	 * Get the supported product statuses.
+	 * Get the supported product stock statuses.
 	 *
 	 * @return array<string>
 	 */
@@ -81,14 +81,14 @@ class Config {
 		}
 
 		/**
-		 * Filter: woocommerce_customer_stock_notifications_supported_product_statuses
+		 * Filter: woocommerce_customer_stock_notifications_supported_product_stock_statuses
 		 *
 		 * @since 10.2.0
 		 *
-		 * @param array $product_statuses Product statuses.
+		 * @param array $product_stock_statuses Product stock statuses.
 		 */
 		self::$supported_product_statuses = (array) apply_filters(
-			'woocommerce_customer_stock_notifications_supported_product_statuses',
+			'woocommerce_customer_stock_notifications_supported_product_stock_statuses',
 			array(
 				ProductStatus::PUBLISH,
 			)

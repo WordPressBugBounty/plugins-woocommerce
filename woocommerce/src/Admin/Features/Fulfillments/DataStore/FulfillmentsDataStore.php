@@ -153,8 +153,7 @@ class FulfillmentsDataStore extends \WC_Data_Store_WP implements \WC_Object_Data
 			throw new \Exception( esc_html__( 'Fulfillment not found.', 'woocommerce' ) );
 		}
 
-		// Use set_props_from_storage() so already-UTC date columns are not re-normalized as site-local.
-		$data->set_props_from_storage( array_diff_key( $fulfillment_data, array( 'fulfillment_id' => true ) ) );
+		$data->set_props( array_diff_key( $fulfillment_data, array( 'fulfillment_id' => true ) ) );
 		$data->set_id( (int) $fulfillment_data['fulfillment_id'] );
 		$data->read_meta_data( true );
 		$data->set_object_read( true );
@@ -305,13 +304,8 @@ class FulfillmentsDataStore extends \WC_Data_Store_WP implements \WC_Object_Data
 		// Soft Delete the fulfillment from the database.
 		global $wpdb;
 
-		$data_id = $data->get_id();
-
-		// Route through the setter so the stored value is normalized to UTC,
-		// then read it back for the direct DB write below.
-		$data->set_date_deleted( current_time( 'mysql' ) );
-		$deletion_time = $data->get_date_deleted();
-
+		$data_id       = $data->get_id();
+		$deletion_time = current_time( 'mysql' );
 		$wpdb->update(
 			$wpdb->prefix . 'wc_order_fulfillments',
 			array( 'date_deleted' => $deletion_time ),
@@ -327,6 +321,8 @@ class FulfillmentsDataStore extends \WC_Data_Store_WP implements \WC_Object_Data
 		if ( $wpdb->last_error ) {
 			throw new \Exception( esc_html__( 'Failed to delete fulfillment.', 'woocommerce' ) );
 		}
+
+		$data->set_date_deleted( $deletion_time );
 		$data->apply_changes();
 		$data->set_object_read( true );
 
@@ -557,8 +553,7 @@ class FulfillmentsDataStore extends \WC_Data_Store_WP implements \WC_Object_Data
 			// Set the ID directly after the object is created.
 			$fulfillment = new Fulfillment();
 			$fulfillment->set_id( $data['fulfillment_id'] );
-			// Use set_props_from_storage() so already-UTC date columns are not re-normalized as site-local.
-			$fulfillment->set_props_from_storage( $data );
+			$fulfillment->set_props( $data );
 			$fulfillment->apply_changes();
 			$fulfillment->set_object_read( true );
 

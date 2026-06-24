@@ -9,7 +9,6 @@ use Automattic\WooCommerce\Blocks\Integrations\IntegrationRegistry;
 use Automattic\WooCommerce\Blocks\BlockTypes\Cart;
 use Automattic\WooCommerce\Blocks\BlockTypes\Checkout;
 use Automattic\WooCommerce\Blocks\BlockTypes\MiniCartContents;
-use Automattic\WooCommerce\Internal\ShopperLists\ShopperListsController;
 
 /**
  * BlockTypesController class.
@@ -382,7 +381,6 @@ final class BlockTypesController {
 			'CatalogSorting',
 			'ClassicShortcode',
 			'CustomerAccount',
-			'Dropdown',
 			'FeaturedCategory',
 			'FeaturedProduct',
 			'MiniCart',
@@ -451,7 +449,6 @@ final class BlockTypesController {
 			'ComingSoon',
 			'CouponCode',
 			'CustomerAccount',
-			'Dropdown',
 			'EmailContent',
 			'FeaturedCategory',
 			'FeaturedProduct',
@@ -556,15 +553,6 @@ final class BlockTypesController {
 			MiniCartContents::get_mini_cart_block_types()
 		);
 
-		if ( wc_get_container()->get( ShopperListsController::class )->is_enabled( 'saved-for-later' ) ) {
-			$block_types[] = 'SavedForLater';
-		}
-
-		if ( wc_get_container()->get( ShopperListsController::class )->is_enabled( 'wishlist' ) ) {
-			$block_types[] = 'Wishlist';
-			$block_types[] = 'AddToWishlistButton';
-		}
-
 		if ( wp_is_block_theme() ) {
 			$block_types[] = 'AddToCartWithOptions\AddToCartWithOptions';
 			$block_types[] = 'AddToCartWithOptions\QuantitySelector';
@@ -572,6 +560,7 @@ final class BlockTypesController {
 			$block_types[] = 'AddToCartWithOptions\VariationSelector';
 			$block_types[] = 'AddToCartWithOptions\VariationSelectorAttribute';
 			$block_types[] = 'AddToCartWithOptions\VariationSelectorAttributeName';
+			$block_types[] = 'AddToCartWithOptions\VariationSelectorAttributeOptions';
 			$block_types[] = 'AddToCartWithOptions\GroupedProductSelector';
 			$block_types[] = 'AddToCartWithOptions\GroupedProductItem';
 			$block_types[] = 'AddToCartWithOptions\GroupedProductItemSelector';

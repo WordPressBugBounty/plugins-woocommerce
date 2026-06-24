@@ -102,7 +102,9 @@ if ( ! class_exists( 'WC_Email_Customer_Cancelled_Order', false ) ) :
 				$this->placeholders['{order_billing_full_name}'] = $this->object->get_formatted_billing_full_name();
 			}
 
-			$this->send_notification();
+			if ( $this->is_enabled() && $this->get_recipient() ) {
+				$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+			}
 
 			$this->restore_locale();
 		}

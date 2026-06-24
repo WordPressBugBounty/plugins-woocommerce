@@ -34,7 +34,7 @@ class Product_Price extends Abstract_Product_Block_Renderer {
 
 		$price_content = $this->generate_price_html( $product, $attributes, $rendering_context );
 
-		return $this->apply_email_wrapper( $price_content, $parsed_block, $rendering_context );
+		return $this->apply_email_wrapper( $price_content, $parsed_block );
 	}
 
 	/**
@@ -190,13 +190,12 @@ class Product_Price extends Abstract_Product_Block_Renderer {
 	/**
 	 * Apply email-compatible table wrapper.
 	 *
-	 * @param string            $price_html Price HTML.
-	 * @param array             $parsed_block Parsed block.
-	 * @param Rendering_Context $rendering_context Rendering context.
+	 * @param string $price_html Price HTML.
+	 * @param array  $parsed_block Parsed block.
 	 * @return string
 	 */
-	private function apply_email_wrapper( string $price_html, array $parsed_block, Rendering_Context $rendering_context ): string {
-		$align = $rendering_context->resolve_text_align( $parsed_block['attrs']['textAlign'] ?? null );
+	private function apply_email_wrapper( string $price_html, array $parsed_block ): string {
+		$align = $parsed_block['attrs']['textAlign'] ?? 'left';
 
 		$wrapper_styles = array(
 			'border-collapse' => 'collapse',

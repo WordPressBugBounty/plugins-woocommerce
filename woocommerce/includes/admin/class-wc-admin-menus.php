@@ -6,6 +6,7 @@
  * @version 2.5.0
  */
 
+use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Internal\Admin\Marketplace;
 use Automattic\WooCommerce\Internal\Admin\Orders\COTRedirectionController;
 use Automattic\WooCommerce\Internal\Admin\Orders\PageController as Custom_Orders_PageController;
@@ -374,7 +375,11 @@ class WC_Admin_Menus {
 	 * @return void
 	 */
 	public function settings_page() {
-		WC_Admin_Settings::output();
+		if ( Features::is_enabled( 'settings' ) ) {
+			echo '<div id="wc-settings-page"/>';
+		} else {
+			WC_Admin_Settings::output();
+		}
 	}
 
 	/**

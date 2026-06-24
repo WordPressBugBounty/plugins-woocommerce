@@ -50,7 +50,8 @@ class Table extends Abstract_Block_Renderer {
 		$block_attributes = wp_parse_args(
 			$parsed_block['attrs'] ?? array(),
 			array(
-				'style' => array(),
+				'textAlign' => 'left',
+				'style'     => array(),
 			)
 		);
 
@@ -94,14 +95,14 @@ class Table extends Abstract_Block_Renderer {
 			$additional_styles['color'] = Html_Processing_Helper::sanitize_color( $color );
 		}
 
-		$additional_styles['text-align'] = $rendering_context->get_default_text_align();
+		$additional_styles['text-align'] = 'left';
 		if ( ! empty( $parsed_block['attrs']['textAlign'] ) ) { // In this case, textAlign needs to be one of 'left', 'center', 'right'.
-			$text_align = $rendering_context->sanitize_text_align( $parsed_block['attrs']['textAlign'] );
-			if ( null !== $text_align ) {
+			$text_align = $parsed_block['attrs']['textAlign'];
+			if ( in_array( $text_align, self::VALID_TEXT_ALIGNMENTS, true ) ) {
 				$additional_styles['text-align'] = $text_align;
 			}
-		} elseif ( null !== $rendering_context->sanitize_text_align( $parsed_block['attrs']['align'] ?? null ) ) {
-			$additional_styles['text-align'] = $rendering_context->resolve_text_align( $parsed_block['attrs']['align'] );
+		} elseif ( in_array( $parsed_block['attrs']['align'] ?? null, self::VALID_TEXT_ALIGNMENTS, true ) ) {
+			$additional_styles['text-align'] = $parsed_block['attrs']['align'];
 		}
 
 		$table_styles = Styles_Helper::extend_block_styles( $table_styles, $additional_styles );
@@ -226,7 +227,7 @@ class Table extends Abstract_Block_Renderer {
 				$border_style   = $this->get_custom_border_style( $parsed_block );
 
 				// Extract cell-specific text alignment.
-				$cell_text_align = $this->get_cell_text_alignment( $html, $rendering_context );
+				$cell_text_align = $this->get_cell_text_alignment( $html );
 
 				$email_cell_styles = "vertical-align: top; border: {$border_width} {$border_style} {$border_color}; padding: 8px; text-align: {$cell_text_align};";
 
@@ -344,10 +345,9 @@ class Table extends Abstract_Block_Renderer {
 	 * Get text alignment for a table cell.
 	 *
 	 * @param \WP_HTML_Tag_Processor $html HTML tag processor.
-	 * @param Rendering_Context      $rendering_context Rendering context.
 	 * @return string Text alignment value (left, center, right).
 	 */
-	private function get_cell_text_alignment( \WP_HTML_Tag_Processor $html, Rendering_Context $rendering_context ): string {
+	private function get_cell_text_alignment( \WP_HTML_Tag_Processor $html ): string {
 		// Check for data-align attribute first.
 		$data_align = $html->get_attribute( 'data-align' );
 		if ( $data_align && in_array( $data_align, self::VALID_TEXT_ALIGNMENTS, true ) ) {
@@ -366,7 +366,8 @@ class Table extends Abstract_Block_Renderer {
 			return 'left';
 		}
 
-		return $rendering_context->get_default_text_align();
+		// Default to left alignment.
+		return 'left';
 	}
 
 	/**
